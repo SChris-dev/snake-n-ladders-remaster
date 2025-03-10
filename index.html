@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snakes & Ladders</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div id="menuContainer">
+        <div class="image-container">
+            <img src="Sprites/logo.png" alt="logo">
+        </div>
+        <div class="options-container">
+            <input type="text" id="usernameInput" placeholder="Input Username">
+            <select name="selectLevel" id="selectLevel">
+                <option value="0" selected disabled>Select Level</option>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+            <select name="selectMode" id="selectMode">
+                <option value="0" selected disabled>Select Mode</option>
+                <option value="multiplayer">Multiplayer</option>
+                <option value="computer">VS. Computer</option>
+            </select>
+            <div class="buttons-container">
+                <button id="startBtn">Play Game</button>
+                <button id="instructionBtn">Instruction</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="instructionContainer">
+        <div class="instruction-content">
+            <h1>How to play game</h1>
+            <p>1. Input Username</p>
+            <p>2. Select Level (Easy / Medium / Hard)</p>
+            <p>3. Select mode (Multiplayer / VS Computer)</p>
+            <p>4. Roll the dice and win the game</p>
+            <p>5. Enjoy!</p>
+        </div>
+        <a id="closeInstructionBtn">
+            <img src="Sprites/close.png" alt="close">
+        </a>
+    </div>
+
+    <div id="gameContainer">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="menu.js"></script>
+</body>
+</html>
