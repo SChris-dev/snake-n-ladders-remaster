@@ -47,7 +47,42 @@
     </div>
 
     <div id="gameContainer">
+        <div id="countdownText">3</div>
+        <div class="game-stats">
+            <p>Player: <span id="usernameText"></span></p>
+            <p>Score: <span id="scoreText">0</span></p>
+            <p>Time: <span id="timerText">00:00</span></p>
+        </div>
+        <div class="game-buttons" id="gameButtons">
+            <button id="rollDiceBtn">Roll the dice</button>
+            <button id="exitSave">Exit & save</button>
+        </div>
         <canvas id="canvas"></canvas>
+        <div class="game-leaderboard">
+            <h1>LEADERBOARD</h1>
+            <select name="filter" id="filter">
+                <option value="sortScore">Sort By Score</option>
+                <option value="sortTime">Sort by Time</option>
+            </select>
+            <div class="player-stats">
+                <div class="player-identity">
+                    <p>Davis Naista</p>
+                    <p>Score: 30</p>
+                </div>
+                <div class="detail-btn">
+                    <button id="detailBtn"><i>Detail</i></button>
+                </div>
+            </div>
+            <div class="player-stats">
+                <div class="player-identity">
+                    <p>Davis Naista</p>
+                    <p>Score: 30</p>
+                </div>
+                <div class="detail-btn">
+                    <button id="detailBtn"><i>Detail</i></button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
