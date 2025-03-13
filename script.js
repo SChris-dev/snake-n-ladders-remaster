@@ -237,8 +237,8 @@ const diceSize = 118;
 let diceFace = 0;
 
 function drawDice() {
-    const diceWidth = 137;  // Adjusted based on image
-    const diceHeight = 132; // Adjusted based on image
+    const diceWidth = 137;
+    const diceHeight = 132;
     const cols = 3;
     const diceOffsetX = 0;
     const diceOffsetY = 0;
