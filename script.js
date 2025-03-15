@@ -62,18 +62,6 @@ let timerInterval;
 let countdown = 3;
 let countdownInterval;
 
-const snakes = {
-    27: 10,
-    22: 5,
-    18: 8
-};
-
-const ladders = {
-    3: 15,
-    6: 17,
-    11: 26
-}
-
 function countdownStart() {
     countdownInterval = setInterval(() => {
         countdown--;
@@ -86,7 +74,7 @@ function countdownStart() {
 
         countdownText.innerHTML = countdown;
 
-    }, 1000)
+    }, 10)
 }
 
 function formatTimer(seconds) {
@@ -157,7 +145,7 @@ class Player {
         let start = getCellPosition(this.position);
         let end = getCellPosition(targetPosition);
 
-        let totalFrames = 10;
+        let totalFrames = 50;
         let deltaX = (end.x - start.x) / totalFrames;
         let deltaY = (end.y - start.y) / totalFrames;
 
@@ -290,6 +278,109 @@ function rollDice() {
 
 rollDiceBtn.addEventListener('click', rollDice);
 
+let ladders = {};
+let snakes = {};
+
+function generateLaddersAndSnakes(ladderCount, snakeCount) {
+
+    while (Object.keys(ladders).length < ladderCount) {
+        let start = Math.floor(Math.random() * 24) + 2; // Avoids tile 1 & last row (25-30)
+
+        let row = Math.floor((start - 1) / cols);
+        if (row >= rows - 1) continue; // 🚫 Prevents ladders from spawning on the last row
+
+        let end = start + cols; // ✅ Moves exactly 1 row up
+
+        // Diagonal movement: 50% chance to move left or right
+        if (Math.random() < 0.5 && (end - 1) % cols !== 0) {
+            end -= 1; // Move left
+        } else if ((end + 1) % cols !== 1) {
+            end += 1; // Move right
+        }
+
+        if (!ladders[start] && !snakes[start] && !ladders[end] && end <= 30) {
+            ladders[start] = end;
+        }
+    }
+
+    while (Object.keys(snakes).length < snakeCount) {
+        let start = Math.floor(Math.random() * 28) + 2; // ✅ FIX: Ensures start is NOT 30
+        let end = start - Math.floor(Math.random() * 6) - 5; // Moves 5-10 steps down
+
+        if (end <= 1 || start === 30 || ladders[start] || snakes[start] || ladders[end]) continue; // ✅ No snakes at tile 30
+
+        snakes[start] = end;
+    }
+
+    return { ladders, snakes };
+}
+
+// 🌍 Global storage for ladder & snake images
+let ladderImages = {};
+let snakeImages = {};
+
+// 🎲 Function to Assign Random Images to Ladders & Snakes (Only Once)
+function assignLadderSnakeImages() {
+    for (let start in ladders) {
+        ladderImages[start] = (Math.random() < 0.5) ? ladder1Image : ladder2Image; // Store choice
+    }
+    for (let start in snakes) {
+        snakeImages[start] = (Math.random() < 0.5) ? snake1Image : snake2Image; // Store choice
+    }
+}
+
+// 🏗️ Function to Draw Ladders (Now Uses Stored Images)
+function drawLadders() {
+    for (let start in ladders) {
+        let end = ladders[start];
+        let startPos = getCellPosition(parseInt(start));
+        let endPos = getCellPosition(end);
+
+        let ladderImg = ladder1Image; // ✅ Uses stored image (doesn't change)
+
+        let width = cellWidth * 1;
+        let height = Math.abs(endPos.y - startPos.y) * 1.2;
+
+        ctx.drawImage(ladderImg, startPos.x - width / 4, startPos.y, width, height);
+    }
+}
+
+// 🐍 Function to Draw Snakes (Now Uses Stored Images)
+function drawSnakes() {
+    for (let start in snakes) {
+        let end = snakes[start];
+        let startPos = getCellPosition(parseInt(start));
+        let endPos = getCellPosition(end);
+
+        let snakeImg = snakeImages[start]; // ✅ Uses stored image (doesn't change)
+
+        let width = cellWidth * 1;
+        let height = Math.abs(endPos.y - startPos.y) * 1.2;
+
+        ctx.drawImage(snakeImg, startPos.x - width / 4, startPos.y, width, height);
+    }
+}
+
+// 🎲 Modify `setGameDifficulty()` to Assign Images
+function setGameDifficulty(level) {
+    let ladderCount = 1; // Default (Easy)
+    let snakeCount = 1;
+
+    if (level === "medium") { // Medium
+        ladderCount = 2;
+        snakeCount = 2;
+    } else if (level === "hard") { // Hard
+        ladderCount = 3;
+        snakeCount = 3;
+    }
+
+    let generated = generateLaddersAndSnakes(ladderCount, snakeCount);
+    ladders = generated.ladders;
+    snakes = generated.snakes;
+
+    assignLadderSnakeImages(); // ✅ Assigns images only once
+}
+
 function drawButtons() {
     gameButtons.style.display = 'flex';
 }
@@ -329,6 +420,8 @@ function gameLoop() {
     createBoard();
     drawBoard();
     drawDice();
+    drawLadders();
+    drawSnakes();
     
     players.forEach(drawPlayer);
 
@@ -336,6 +429,12 @@ function gameLoop() {
 }
 
 function gameStart() {
+    let selectedLevel = selectLevel.value;
+    setGameDifficulty(selectedLevel);
+
+    console.log("Ladders:", ladders);
+    console.log("Snakes:", snakes);
+
     gameLoop();
     drawButtons();
     timerStart();
